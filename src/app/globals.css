@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+
+  --color-canvas: #ffffff;
+  --color-surface: #f4f5f3;
+  --color-surface-2: #eceeeb;
+  --color-line: rgb(12 18 14 / 0.08);
+  --color-ink: #0c110e;
+  --color-ink-2: #2a312d;
+  --color-muted: #646c67;
+  --color-accent: #13a04c;
+  --color-accent-hover: #0f8a41;
+  --color-accent-soft: #e6f5ec;
+  --color-danger: #d4433a;
+
+  --radius-card: 28px;
+  --radius-xl2: 20px;
+
+  --shadow-soft: 0 1px 2px rgb(12 18 14 / 0.04), 0 8px 24px -12px rgb(12 18 14 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(12 18 14 / 0.04), 0 24px 48px -20px rgb(12 18 14 / 0.22);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-canvas text-ink antialiased;
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+}
+
+/* Появление при скролле. Без JS контент остаётся видимым. */
+.js .reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.7s var(--ease-out-soft),
+    transform 0.7s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes drift {
+  from { transform: translate3d(-4%, 0, 0); }
+  to { transform: translate3d(4%, 0, 0); }
+}
+.cloud-drift {
+  animation: drift 60s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(19 160 76 / 0.35); }
+  50% { box-shadow: 0 0 0 5px rgb(19 160 76 / 0); }
+}
+.status-dot-live {
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.page-in {
+  animation: page-in 0.5s var(--ease-out-soft) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js .reveal { opacity: 1; transform: none; }
+}
